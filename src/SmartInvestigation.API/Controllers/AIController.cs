@@ -59,8 +59,12 @@ public class AIController : ControllerBase
     }
 
     [HttpPost("speech-to-text")]
-    public async Task<IActionResult> SpeechToText([FromForm] IFormFile audio, [FromForm] string language = "en")
+    [Consumes("multipart/form-data")]
+    public async Task<IActionResult> SpeechToText([FromForm] SpeechToTextRequestDto request)
     {
+        var audio = request.Audio;
+        var language = request.Language;
+
         if (audio == null || audio.Length == 0)
             return BadRequest("No audio file provided.");
 
@@ -129,4 +133,10 @@ public class TranslateRequest
 {
     public string Text { get; set; } = string.Empty;
     public string TargetLanguage { get; set; } = "en";
+}
+
+public class SpeechToTextRequestDto
+{
+    public IFormFile Audio { get; set; } = null!;
+    public string Language { get; set; } = "en";
 }

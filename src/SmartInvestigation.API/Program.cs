@@ -139,7 +139,8 @@ app.Use(async (context, next) =>
 });
 
 // Seed Database
-try 
+// --- SEEDING DISABLED FOR PRODUCTION AFTER INITIAL RUN ---
+/* try 
 {
     Console.WriteLine("--- Starting Database Seeding ---");
     using (var scope = app.Services.CreateScope())
@@ -152,7 +153,7 @@ try
 catch (Exception ex)
 {
     Console.WriteLine($"--- Database Seeding Failed: {ex.Message} ---");
-}
+} */
 
 app.UseSwagger();
 app.UseSwaggerUI(c => 
