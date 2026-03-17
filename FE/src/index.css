@@ -1,27 +1,119 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
+  :root {
+    --police-deep: 10, 25, 47;
+    --police-dark: 2, 6, 23;
+  }
+
+  * {
+    @apply border-white/5;
+  }
+
   body {
-    @apply bg-police-deep text-blue-50 font-sans selection:bg-primary-500/30;
+    @apply bg-police-dark text-blue-50 font-sans selection:bg-primary-500/30 overflow-x-hidden;
     margin: 0;
     min-height: 100vh;
   }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  .display {
+    @apply font-display text-white tracking-tight leading-tight;
+  }
+
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-police-dark;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-white/10 rounded-full hover:bg-white/20 transition-colors;
+  }
 }
 
-.glass-card {
-  @apply bg-police-accent/40 backdrop-blur-md border border-white/10 rounded-2xl shadow-xl transition-all duration-300;
+@layer components {
+
+  /* UI SHAPES & EFFECTS */
+  .glass-panel {
+    @apply bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl transition-all duration-300;
+  }
+
+  .premium-card {
+    @apply bg-gradient-to-br from-white/10 to-transparent backdrop-blur-md border border-white/10 rounded-2xl p-6 shadow-xl relative overflow-hidden transition-all duration-500 hover:shadow-primary-500/10 hover:border-white/20;
+  }
+
+  .premium-card::after {
+    content: "";
+    @apply absolute inset-0 bg-gradient-to-tr from-primary-500/0 via-primary-500/5 to-primary-500/0 opacity-0 transition-opacity duration-700;
+  }
+
+  .premium-card:hover::after {
+    @apply opacity-100;
+  }
+
+  /* BUTTONS & CONTROLS */
+  .btn-primary {
+    @apply px-6 py-2.5 bg-primary-600 hover:bg-primary-500 text-white font-semibold rounded-xl transition-all duration-300 shadow-lg shadow-primary-500/20 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2;
+  }
+
+  .btn-secondary {
+    @apply px-6 py-2.5 bg-white/10 hover:bg-white/20 text-white font-medium rounded-xl transition-all duration-300 border border-white/10 active:scale-[0.98] flex items-center justify-center gap-2;
+  }
+
+  .input-field {
+    @apply w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-blue-100/30 focus:outline-none focus:ring-2 focus:ring-primary-500/40 focus:border-primary-500/50 transition-all duration-300;
+  }
+
+  /* LAYOUT HELPERS */
+  .page-container {
+    @apply p-4 md:p-8 space-y-8 max-w-7xl mx-auto;
+  }
+
+  .status-badge {
+    @apply px-3 py-1 text-xs font-bold uppercase tracking-wider rounded-lg border flex items-center gap-1.5 w-fit;
+  }
+
+  .badge-investigation {
+    @apply bg-blue-500/10 text-blue-400 border-blue-500/20 ring-1 ring-blue-500/10;
+  }
+
+  .badge-closed {
+    @apply bg-police-success/10 text-police-success border-police-success/20 ring-1 ring-police-success/10;
+  }
+
+  .badge-high {
+    @apply bg-police-crimson/10 text-police-crimson border-police-crimson/20 ring-1 ring-police-crimson/10;
+  }
+
+  .badge-medium {
+    @apply bg-police-gold/10 text-police-gold border-police-gold/20 ring-1 ring-police-gold/10;
+  }
+
+  /* ANIMATIONS */
+  .animate-entrance {
+    @apply animate-slide-up opacity-0;
+  }
 }
 
-.glass-card:hover {
-  @apply border-primary-500/30 shadow-primary-500/10;
-}
+@layer utilities {
+  .text-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-white via-blue-200 to-primary-300;
+  }
 
-.nav-link {
-  @apply px-4 py-2 rounded-lg text-blue-100/70 hover:text-white hover:bg-white/5 transition-colors cursor-pointer;
-}
-
-.primary-btn {
-  @apply px-6 py-2 bg-gradient-to-r from-primary-600 to-primary-500 hover:from-primary-500 hover:to-primary-400 text-white font-semibold rounded-xl transition-all duration-300 shadow-lg shadow-primary-500/20 active:scale-95;
+  .glow-mesh {
+    background-image: radial-gradient(circle at 20% 30%, rgba(14, 165, 233, 0.05) 0%, transparent 40%),
+      radial-gradient(circle at 80% 80%, rgba(14, 165, 233, 0.03) 0%, transparent 40%),
+      radial-gradient(circle at 50% 50%, rgba(2, 6, 23, 1) 0%, rgba(2, 6, 23, 1) 100%);
+  }
 }

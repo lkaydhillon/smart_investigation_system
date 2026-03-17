@@ -1,0 +1,43 @@
+import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
+
+export type UserRole = 'Investigator' | 'Admin' | 'SuperAdmin';
+
+interface User {
+    id: string;
+    username: string;
+    fullName: string;
+    role: UserRole;
+    rank?: string;
+    badgeNumber?: string;
+    policeStationId?: string;
+}
+
+interface AuthState {
+    user: User | null;
+    token: string | null;
+    isAuthenticated: boolean;
+    login: (user: User, token: string) => void;
+    logout: () => void;
+}
+
+export const useAuthStore = create<AuthState>()(
+    persist(
+        (set) => ({
+            user: null,
+            token: null,
+            isAuthenticated: false,
+            login: (user, token) => {
+                localStorage.setItem('token', token);
+                set({ user, token, isAuthenticated: true });
+            },
+            logout: () => {
+                localStorage.removeItem('token');
+                set({ user: null, token: null, isAuthenticated: false });
+            },
+        }),
+        {
+            name: 'smart-investigation-auth',
+        }
+    )
+);
