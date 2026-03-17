@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import {
     LayoutDashboard, FileText, Shield, User, LogOut, Search, Bell,
-    Settings, Menu, X, Landmark, Gavel, Cpu, HardDrive
+    Settings, Menu, Landmark, Gavel, Cpu, HardDrive
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuthStore } from '../store/authStore';
@@ -85,7 +85,6 @@ const Sidebar = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) 
 
     return (
         <>
-            {/* Mobile Overlay */}
             <AnimatePresence>
                 {isOpen && (
                     <motion.div
