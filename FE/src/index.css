@@ -1,0 +1,27 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-police-deep text-blue-50 font-sans selection:bg-primary-500/30;
+    margin: 0;
+    min-height: 100vh;
+  }
+}
+
+.glass-card {
+  @apply bg-police-accent/40 backdrop-blur-md border border-white/10 rounded-2xl shadow-xl transition-all duration-300;
+}
+
+.glass-card:hover {
+  @apply border-primary-500/30 shadow-primary-500/10;
+}
+
+.nav-link {
+  @apply px-4 py-2 rounded-lg text-blue-100/70 hover:text-white hover:bg-white/5 transition-colors cursor-pointer;
+}
+
+.primary-btn {
+  @apply px-6 py-2 bg-gradient-to-r from-primary-600 to-primary-500 hover:from-primary-500 hover:to-primary-400 text-white font-semibold rounded-xl transition-all duration-300 shadow-lg shadow-primary-500/20 active:scale-95;
+}
