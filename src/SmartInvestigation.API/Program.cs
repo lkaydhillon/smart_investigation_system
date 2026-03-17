@@ -120,6 +120,11 @@ app.Use(async (context, next) =>
     {
         Console.WriteLine($"[CRASH]: {ex.GetType().Name} - {ex.Message}");
         Console.WriteLine(ex.StackTrace);
+
+        if (context.Request.Path.StartsWithSegments("/swagger"))
+        {
+            Console.WriteLine("[SWAGGER ERROR]: Failed to generate/serve OpenAPI documentation.");
+        }
         throw;
     }
 });
@@ -144,11 +149,11 @@ catch (Exception ex)
 app.UseSwagger();
 app.UseSwaggerUI(c => 
 {
-    c.SwaggerEndpoint("v1/swagger.json", "Smart Investigation API v1");
+    c.SwaggerEndpoint("v1/swagger.json", "Smart Investigation API v1"); // Relative path for Render
     c.RoutePrefix = "swagger"; 
 });
 
-// app.UseHttpsRedirection(); // Commented out for Render
+// app.UseHttpsRedirection(); // SSL handled at gateway
 app.UseCors("AllowAll");
 app.UseRateLimiter();
 app.UseAuthentication();
