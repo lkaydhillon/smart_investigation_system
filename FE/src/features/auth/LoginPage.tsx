@@ -36,9 +36,9 @@ export const LoginPage = () => {
         setError(null);
         try {
             const testCreds = {
-                SuperAdmin: { username: 'superadmin', password: 'Password@123' },
-                Admin: { username: 'pstation_sho', password: 'Password@123' },
-                Investigator: { username: 'investigator_1', password: 'Password@123' }
+                SuperAdmin: { username: 'admin', password: 'admin123' },
+                Admin: { username: 'sho01', password: 'admin123' },
+                Investigator: { username: 'io01', password: 'admin123' }
             };
 
             const creds = testCreds[role];
