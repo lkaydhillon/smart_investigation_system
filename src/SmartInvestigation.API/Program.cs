@@ -98,9 +98,31 @@ builder.Services.AddSwaggerGen(c =>
             Array.Empty<string>()
         }
     });
+
+    // Custom Schema ID Selector to avoid 500 errors from naming collisions
+    c.CustomSchemaIds(type => type.FullName);
 });
 
 var app = builder.Build();
+
+// Root routes
+app.MapGet("/", () => "Smart Investigation API is Live and Running!");
+app.MapGet("/health", () => Results.Ok(new { Status = "Healthy", Timestamp = DateTime.UtcNow }));
+
+// Exception Logging Middleware
+app.Use(async (context, next) =>
+{
+    try
+    {
+        await next();
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"[CRASH]: {ex.GetType().Name} - {ex.Message}");
+        Console.WriteLine(ex.StackTrace);
+        throw;
+    }
+});
 
 // Seed Database
 try 
@@ -116,28 +138,22 @@ try
 catch (Exception ex)
 {
     Console.WriteLine($"--- Database Seeding Failed: {ex.Message} ---");
-    Console.WriteLine(ex.StackTrace);
 }
 
 // Configure the HTTP request pipeline.
-// Temporarily enable Swagger in ALL environments for troubleshooting Render
 app.UseSwagger();
 app.UseSwaggerUI(c => 
 {
-    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Smart Investigation API v1");
-    c.RoutePrefix = "swagger"; // Ensure it's at /swagger
+    c.SwaggerEndpoint("v1/swagger.json", "Smart Investigation API v1");
+    c.RoutePrefix = "swagger"; 
 });
 
-app.UseHttpsRedirection();
+// app.UseHttpsRedirection(); // Commented out for Render
 app.UseCors("AllowAll");
 app.UseRateLimiter();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
-
-// Root route to prevent 404 and verify service is live
-app.MapGet("/", () => "Smart Investigation API is Live and Running!");
-app.MapGet("/health", () => Results.Ok(new { Status = "Healthy", Timestamp = DateTime.UtcNow }));
 
 Console.WriteLine($"--- Application is starting on port {port} ---");
 
