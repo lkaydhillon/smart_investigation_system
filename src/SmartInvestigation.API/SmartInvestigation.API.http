@@ -1,0 +1,6 @@
+@SmartInvestigation.API_HostAddress = http://localhost:5119
+
+GET {{SmartInvestigation.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

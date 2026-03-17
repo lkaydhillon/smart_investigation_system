@@ -1,0 +1,27 @@
+# Visual Studio
+.vs/
+[Bb]in/
+[Oo]bj/
+*.user
+*.userosscache
+*.sln.docstates
+
+# Expo / React Native
+node_modules/
+.expo/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+dist/
+web-build/
+
+# OS
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Environment / Secret
+appsettings.Development.json
+.env
+.env.local
+.env.production
