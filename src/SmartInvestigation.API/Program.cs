@@ -7,6 +7,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using SmartInvestigation.Application;
 using SmartInvestigation.Infrastructure;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,7 +19,6 @@ builder.WebHost.UseUrls($"http://*:{port}");
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
 
-// ── Controllers ──
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
@@ -61,7 +61,6 @@ builder.Services.AddRateLimiter(options =>
     options.RejectionStatusCode = 429;
 });
 
-// ── CORS ──
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", policy => policy
@@ -75,19 +74,17 @@ builder.Services.AddSwaggerGen(c =>
     c.SwaggerDoc("v1", new OpenApiInfo
     {
         Title = "Smart Investigation & Case Management API",
-        Version = "v1",
-        Description = "Production-grade API for law enforcement investigation and case management",
-        Contact = new OpenApiContact { Name = "Admin", Email = "admin@smartinvestigation.gov" }
+        Version = "v1"
     });
+    
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Name = "Authorization",
         Type = SecuritySchemeType.ApiKey,
         Scheme = "Bearer",
-        BearerFormat = "JWT",
-        In = ParameterLocation.Header,
-        Description = "Enter 'Bearer' followed by a space and your JWT token"
+        In = ParameterLocation.Header
     });
+    
     c.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
         {
@@ -99,17 +96,21 @@ builder.Services.AddSwaggerGen(c =>
         }
     });
 
-    // Custom Schema ID Selector to avoid 500 errors from naming collisions
-    c.CustomSchemaIds(type => type.FullName);
+    // ROBUST RESOLVERS
+    c.CustomSchemaIds(type => type.FullName ?? type.ToString());
+    c.CustomOperationIds(apiDesc => apiDesc.TryGetMethodInfo(out MethodInfo methodInfo) ? methodInfo.Name : null);
 });
 
 var app = builder.Build();
+
+// MANDATORY FOR RENDER DEBUGGING
+app.UseDeveloperExceptionPage(); 
 
 // Root routes
 app.MapGet("/", () => "Smart Investigation API is Live and Running!");
 app.MapGet("/health", () => Results.Ok(new { Status = "Healthy", Timestamp = DateTime.UtcNow }));
 
-// Exception Logging Middleware
+// Exception Logging Middleware with RESPONSE BODY for debugging
 app.Use(async (context, next) =>
 {
     try
@@ -121,11 +122,18 @@ app.Use(async (context, next) =>
         Console.WriteLine($"[CRASH]: {ex.GetType().Name} - {ex.Message}");
         Console.WriteLine(ex.StackTrace);
 
-        if (context.Request.Path.StartsWithSegments("/swagger"))
+        if (!context.Response.HasStarted)
         {
-            Console.WriteLine("[SWAGGER ERROR]: Failed to generate/serve OpenAPI documentation.");
+            context.Response.StatusCode = 500;
+            context.Response.ContentType = "application/json";
+            var errorDetails = new { 
+                Error = ex.Message, 
+                Type = ex.GetType().Name,
+                Stack = ex.StackTrace,
+                Path = context.Request.Path.Value
+            };
+            await context.Response.WriteAsJsonAsync(errorDetails);
         }
-        throw;
     }
 });
 
@@ -145,15 +153,13 @@ catch (Exception ex)
     Console.WriteLine($"--- Database Seeding Failed: {ex.Message} ---");
 }
 
-// Configure the HTTP request pipeline.
 app.UseSwagger();
 app.UseSwaggerUI(c => 
 {
-    c.SwaggerEndpoint("v1/swagger.json", "Smart Investigation API v1"); // Relative path for Render
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "V1");
     c.RoutePrefix = "swagger"; 
 });
 
-// app.UseHttpsRedirection(); // SSL handled at gateway
 app.UseCors("AllowAll");
 app.UseRateLimiter();
 app.UseAuthentication();
