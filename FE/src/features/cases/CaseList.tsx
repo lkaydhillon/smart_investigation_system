@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import {
-    Search, Filter, Plus, Calendar, User,
-    MapPin, Shield, ChevronRight, Download, MoreVertical, AlertTriangle
+    Search, Filter, Plus, User,
+    MapPin, Shield, ChevronRight, Download, AlertTriangle
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -44,7 +44,6 @@ const cn = (...inputs: any[]) => inputs.filter(Boolean).join(' ');
 export const CaseList = () => {
     const [searchTerm, setSearchTerm] = useState('');
 
-    // Dummy data for visual development (matches backend schema)
     const mockCases = [
         { id: '1', caseNumber: 'CR/2025/1024', status: 'Active', priority: 'High', type: 'Theft - Commercial', date: '2025-03-12', station: 'Central-4', io: 'Kumar S.' },
         { id: '2', caseNumber: 'CR/2025/1105', status: 'Pending', priority: 'Medium', type: 'Assault', date: '2025-03-14', station: 'North-2', io: 'Sharma A.' },
@@ -60,7 +59,6 @@ export const CaseList = () => {
 
     return (
         <div className="space-y-6">
-            {/* Header & Controls */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
                 <div>
                     <h2 className="text-3xl font-black tracking-tight">Case <span className="text-primary-500">Repository</span></h2>
@@ -79,7 +77,6 @@ export const CaseList = () => {
             </div>
 
             <div className="glass-panel border-white/5 overflow-hidden">
-                {/* Toolbar */}
                 <div className="p-4 border-b border-white/5 bg-white/5 flex flex-col sm:flex-row items-center justify-between gap-4">
                     <div className="relative w-full sm:w-96">
                         <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-blue-100/30" />
@@ -101,7 +98,6 @@ export const CaseList = () => {
                     </div>
                 </div>
 
-                {/* Table View */}
                 <div className="overflow-x-auto">
                     <table className="w-full text-left border-collapse">
                         <thead>
@@ -192,7 +188,6 @@ export const CaseList = () => {
                     )}
                 </div>
 
-                {/* Footer / Pagination */}
                 <div className="p-4 border-t border-white/5 bg-white/5 flex items-center justify-between">
                     <p className="text-[10px] font-black uppercase tracking-widest text-blue-100/20 pl-2">Displaying 1-10 of 128 results</p>
                     <div className="flex items-center gap-1">

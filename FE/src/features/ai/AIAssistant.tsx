@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import {
-    Send, Cpu, MessageSquare, History, BookOpen,
-    ChevronRight, ArrowRight, CornerDownLeft, Sparkles, Trash2, ShieldCheck, Download, Copy
+    Cpu, History, BookOpen,
+    ArrowRight, CornerDownLeft, Sparkles, Trash2, ShieldCheck, Download, Copy
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 

@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Shield, Fingerprint, Lock, Mail, ArrowRight, UserCheck, ShieldCheck, User } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { authApi } from '../../services/authApi';
-import { useAuthStore, type UserRole } from '../../store/authStore';
+import { type UserRole } from '../../store/authStore';
 
 const QuickLoginCard = ({ role, title, desc, onClick, icon: Icon }: any) => (
     <button
@@ -35,8 +35,6 @@ export const LoginPage = () => {
         setLoading(true);
         setError(null);
         try {
-            // Simulation or Real Call for predefined test users
-            // For testing, we use standard demo credentials configured in backend seeder
             const testCreds = {
                 SuperAdmin: { username: 'superadmin', password: 'Password@123' },
                 Admin: { username: 'pstation_sho', password: 'Password@123' },
@@ -69,15 +67,12 @@ export const LoginPage = () => {
 
     return (
         <div className="min-h-screen bg-police-dark flex items-center justify-center p-4 selection:bg-primary-500/40 relative overflow-hidden">
-            {/* Background Ambience */}
             <div className="absolute top-0 left-0 w-full h-full pointer-events-none opacity-20">
                 <div className="absolute top-[10%] left-[10%] w-96 h-96 bg-primary-600 rounded-full blur-[120px] mix-blend-screen animate-pulse-slow"></div>
                 <div className="absolute bottom-[10%] right-[10%] w-96 h-96 bg-police-crimson rounded-full blur-[120px] mix-blend-screen opacity-50 animate-pulse-slow"></div>
             </div>
 
             <div className="w-full max-w-6xl grid grid-cols-1 lg:grid-cols-2 gap-12 items-center relative z-10">
-
-                {/* Left Side: Hero Brand */}
                 <div className="hidden lg:block space-y-8">
                     <motion.div
                         initial={{ opacity: 0, scale: 0.9 }}
@@ -119,7 +114,6 @@ export const LoginPage = () => {
                     </div>
                 </div>
 
-                {/* Right Side: Login Form */}
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -187,7 +181,6 @@ export const LoginPage = () => {
                         </button>
                     </form>
 
-                    {/* Quick Login - Role Based */}
                     <div className="mt-12 flex flex-col items-center">
                         <div className="w-full flex items-center gap-4 mb-8">
                             <div className="h-px flex-1 bg-white/5"></div>
