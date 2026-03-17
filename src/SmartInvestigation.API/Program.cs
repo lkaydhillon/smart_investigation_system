@@ -8,6 +8,7 @@ using Microsoft.OpenApi.Models;
 using SmartInvestigation.Application;
 using SmartInvestigation.Infrastructure;
 using System.Reflection;
+using Swashbuckle.AspNetCore.SwaggerGen;
 
 var builder = WebApplication.CreateBuilder(args);
 
