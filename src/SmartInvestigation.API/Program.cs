@@ -10,6 +10,10 @@ using SmartInvestigation.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Render Port Binding
+var port = Environment.GetEnvironmentVariable("PORT") ?? "10000";
+builder.WebHost.UseUrls($"http://*:{port}");
+
 // ── Layer DI Registration ──
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
@@ -99,18 +103,30 @@ builder.Services.AddSwaggerGen(c =>
 var app = builder.Build();
 
 // Seed Database
-using (var scope = app.Services.CreateScope())
+try 
 {
-    var context = scope.ServiceProvider.GetRequiredService<SmartInvestigation.Infrastructure.Persistence.AppDbContext>();
-    await SmartInvestigation.Infrastructure.Persistence.SeedData.DataSeeder.SeedAsync(context);
+    Console.WriteLine("--- Starting Database Seeding ---");
+    using (var scope = app.Services.CreateScope())
+    {
+        var context = scope.ServiceProvider.GetRequiredService<SmartInvestigation.Infrastructure.Persistence.AppDbContext>();
+        await SmartInvestigation.Infrastructure.Persistence.SeedData.DataSeeder.SeedAsync(context);
+    }
+    Console.WriteLine("--- Database Seeding Completed Successfully ---");
+}
+catch (Exception ex)
+{
+    Console.WriteLine($"--- Database Seeding Failed: {ex.Message} ---");
+    Console.WriteLine(ex.StackTrace);
 }
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+// Temporarily enable Swagger in ALL environments for troubleshooting Render
+app.UseSwagger();
+app.UseSwaggerUI(c => 
 {
-    app.UseSwagger();
-    app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Smart Investigation API v1"));
-}
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Smart Investigation API v1");
+    c.RoutePrefix = "swagger"; // Ensure it's at /swagger
+});
 
 app.UseHttpsRedirection();
 app.UseCors("AllowAll");
@@ -118,5 +134,11 @@ app.UseRateLimiter();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
+
+// Root route to prevent 404 and verify service is live
+app.MapGet("/", () => "Smart Investigation API is Live and Running!");
+app.MapGet("/health", () => Results.Ok(new { Status = "Healthy", Timestamp = DateTime.UtcNow }));
+
+Console.WriteLine($"--- Application is starting on port {port} ---");
 
 app.Run();
