@@ -11,7 +11,9 @@ public static class DataSeeder
 
     public static async Task SeedAsync(AppDbContext context)
     {
-        await context.Database.EnsureCreatedAsync(); // Ensure DB is created (useful for dev/test)
+        // Render Workaround: EnsureCreatedAsync causes Status 139 (Segfault) on Alpine/Linux.
+        // We will run `dotnet ef database update` manually or via CI/CD instead of at runtime.
+        // await context.Database.EnsureCreatedAsync(); 
 
         Role? adminRole = await context.Roles.FirstOrDefaultAsync(r => r.Name == "SuperAdmin");
 
